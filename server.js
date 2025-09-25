@@ -16,7 +16,7 @@ console.log(authRoutes, urlRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/url', urlRoutes);
 
-// Redirect short URLs
+
 app.get('/:shortId', async (req, res) => {
   let shortId = req.params.shortId;
   let url = await Url.findOne({ shortId: shortId });

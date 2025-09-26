@@ -24,24 +24,4 @@ function auth(req, res, next) {
     }
 }
 
-function isLogin(req, res, next) {
-    console.log("Running isLogin middleware");
-    next();
-}
-
-function checkAdmin(req, res, next) {
-    console.log("Running checkAdmin middleware");
-    let { name } = req.query;
-    if (name === "Varnika") {
-        req.isAdmin = true;
-        return next();
-    }
-    res.json({
-        success: false,
-        message: "You are not an admin"
-    });
-}
-
 module.exports.auth = auth;
-module.exports.isLogin = isLogin;
-module.exports.checkAdmin = checkAdmin;

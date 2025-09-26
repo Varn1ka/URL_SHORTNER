@@ -8,6 +8,7 @@ module.exports.registerUser = async (req, res) => {
   if (existing) return res.json({ success: false, message: "User already exists" })
   const user = new User({ email, password }) 
   await user.save()
+  
   res.json({
     success: true,
     message: "User registered successfully",
@@ -20,6 +21,7 @@ module.exports.loginUser = async (req, res) => {
   const user = await User.findOne({ email })
   if (!user || user.password !== password) {
     return res.json({ success: false, message: "Invalid credentials" })
+    
   }
 
   const token = jwt.sign({ id: user._id }, JWT_SECRET)
@@ -27,5 +29,6 @@ module.exports.loginUser = async (req, res) => {
     success: true,
     message: "Login successful",
     token
+    
   })
 }

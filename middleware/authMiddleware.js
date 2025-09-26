@@ -1,10 +1,10 @@
 const jwt = require("jsonwebtoken");
 
-const JWT_SECRET = "mySuperSecretKey123"; // must match authController
+const JWT_SECRET = "mySuperSecretKey123"; 
 
 function auth(req, res, next) {
     console.log("Running auth middleware");
-    const token = req.headers.authorization; // just the token, no "Bearer"
+    const token = req.headers.authorization; 
     if (!token) {
         return res.json({
             success: false,
@@ -13,7 +13,7 @@ function auth(req, res, next) {
     }
 
     try {
-        const decoded = jwt.verify(token, JWT_SECRET); // verify with the same secret
+        const decoded = jwt.verify(token, JWT_SECRET); 
         req.user = decoded;
         next();
     } catch {

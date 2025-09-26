@@ -16,7 +16,7 @@ console.log(authRoutes, urlRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/url', urlRoutes);
 
-// Redirect short URLs
+
 app.get('/:shortId', async (req, res) => {
   let shortId = req.params.shortId;
   let url = await Url.findOne({ shortId: shortId });
@@ -27,6 +27,6 @@ app.get('/:shortId', async (req, res) => {
 mongoose.connect('mongodb://127.0.0.1:27017/urlshortener')
   .then(() => console.log('MongoDB Connected!'));
 
-app.listen(5000, () => {
-  console.log('Server started on port 5000');
+app.listen(7000, () => {
+  console.log('Server started on port 7000');
 });

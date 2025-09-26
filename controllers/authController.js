@@ -1,18 +1,15 @@
 const User = require("../models/user")
-const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 
-const JWT_SECRET = "mySuperSecretKey123"  // hardcoded secret for CE1
+const JWT_SECRET = "mySuperSecretKey123"  
 
 module.exports.registerUser = async (req, res) => {
-  let email = req.body.email
-  let password = req.body.password
+  const { email, password } = req.body
 
-  let existing = await User.findOne({ email })
+  const existing = await User.findOne({ email })
   if (existing) return res.json({ success: false, message: "User already exists" })
 
-  let hash = await bcrypt.hash(password, 10)
-  let user = new User({ email: email, password: hash })
+  const user = new User({ email, password }) 
   await user.save()
 
   res.json({
@@ -22,21 +19,18 @@ module.exports.registerUser = async (req, res) => {
   })
 }
 
+
 module.exports.loginUser = async (req, res) => {
-  let email = req.body.email
-  let password = req.body.password
+  const { email, password } = req.body
 
-  let user = await User.findOne({ email })
-  if (!user) return res.json({ success: false, message: "Invalid credentials" })
+  const user = await User.findOne({ email })
+  if (!user || user.password !== password)
+    return res.json({ success: false, message: "Invalid credentials" })
 
-  let valid = await bcrypt.compare(password, user.password)
-  if (!valid) return res.json({ success: false, message: "Invalid credentials" })
-
-  // generate token using hardcoded secret
-  let token = jwt.sign({ sub: user._id }, JWT_SECRET)
+  const token = jwt.sign({ sub: user._id }, JWT_SECRET)
   res.json({
     success: true,
     message: "Login successful",
-    token: token
+    token
   })
 }

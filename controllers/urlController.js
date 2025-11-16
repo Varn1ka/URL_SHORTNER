@@ -1,38 +1,63 @@
-const Url = require("../models/url")
-const { nanoid } = require("nanoid")
+const Url = require("../models/url");
+const { nanoid } = require("nanoid");
 
+// ----------------------
+// CREATE SHORT URL
+// ----------------------
 module.exports.postShortenUrl = async (req, res) => {
-  let originalUrl = req.body.originalUrl
-  let shortId = nanoid(7)
+  try {
+    const originalUrl = req.body.originalUrl;
+    const shortId = nanoid(7);
 
-  let url = new Url({
-    originalUrl: originalUrl,
-    shortId: shortId,
-    owner: req.user.sub
-  })
+    const url = new Url({
+      originalUrl,
+      shortId,
+      owner: req.user.id,
+    });
 
-  await url.save()
-  res.json({
-    success: true,
-    message: "URL shortened successfully",
-    data: { shortUrl: `${process.env.BASE_URL}/${shortId}`, shortId: shortId }
-  })
-}
+    await url.save();
 
+    // Redirect back to dashboard instead of showing JSON
+    return res.redirect("/dashboard");
+
+  } catch (err) {
+    console.error(err);
+    return res.redirect("/dashboard");
+  }
+};
+
+// ----------------------
+// FETCH USER'S URL LIST
+// ----------------------
 module.exports.getMyUrls = async (req, res) => {
-  let urls = await Url.find({ owner: req.user.sub })
-  res.json({
-    success: true,
-    message: "URLs fetched successfully",
-    data: urls
-  })
-}
+  try {
+    const urls = await Url.find({ owner: req.user.id });
 
+    // Render dashboard with updated URLs
+    return res.render("dashboard", { urls });
+  } catch (err) {
+    console.error(err);
+    return res.render("dashboard", { urls: [] });
+  }
+};
+
+// ----------------------
+// DELETE URL
+// ----------------------
 module.exports.deleteUrl = async (req, res) => {
-  let id = req.params.id
-  await Url.findOneAndDelete({ _id: id, owner: req.user.sub })
-  res.json({
-    success: true,
-    message: "URL deleted successfully"
-  })
-}
+  try {
+    const id = req.params.id;
+
+    await Url.findOneAndDelete({
+      _id: id,
+      owner: req.user.id,
+    });
+
+    // Redirect back to dashboard
+    return res.redirect("/dashboard");
+
+  } catch (err) {
+    console.error(err);
+    return res.redirect("/dashboard");
+  }
+};

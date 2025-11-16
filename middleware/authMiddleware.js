@@ -1,36 +1,41 @@
 const jwt = require("jsonwebtoken");
-
-const JWT_SECRET = "mySuperSecretKey123"; 
+const JWT_SECRET = "mySuperSecretKey123";
 
 function auth(req, res, next) {
     console.log("Running auth middleware");
-    const token = req.headers.authorization; 
+
+    // Accept token from header or cookie
+    let token = req.cookies.token || req.headers.authorization;
+
     if (!token) {
-        return res.json({
+        return res.status(401).json({
             success: false,
             message: "Authorization required"
         });
     }
 
+    // If token comes as "Bearer xyz..."
+    if (token.startsWith("Bearer ")) {
+        token = token.split(" ")[1];
+    }
+
     try {
-        const decoded = jwt.verify(token, JWT_SECRET); 
-        req.user = decoded;
+        const decoded = jwt.verify(token, JWT_SECRET);
+        req.user = decoded;   // { id, email }
         next();
-    } catch {
-        res.json({
+    } catch (err) {
+        return res.status(401).json({
             success: false,
-            message: "Invalid token"
+            message: "Invalid or expired token"
         });
     }
 }
 
 function isLogin(req, res, next) {
-    console.log("Running isLogin middleware");
     next();
 }
 
 function checkAdmin(req, res, next) {
-    console.log("Running checkAdmin middleware");
     let { name } = req.query;
     if (name === "Varnika") {
         req.isAdmin = true;
@@ -42,6 +47,4 @@ function checkAdmin(req, res, next) {
     });
 }
 
-module.exports.auth = auth;
-module.exports.isLogin = isLogin;
-module.exports.checkAdmin = checkAdmin;
+module.exports = { auth, isLogin, checkAdmin };

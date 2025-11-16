@@ -1,0 +1,96 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #F9F9F9;
+  color: #2E2E2E;
+  margin: 0;
+  padding: 0;
+}
+
+/* Header */
+.navbar {
+  background-color: #708238; /* Olive Green */
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar .btn {
+  background-color: #A8BCA1; /* Sage Green */
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.navbar .logout {
+  background-color: #FADADD; /* Light Pink */
+  color: #2E2E2E;
+}
+
+/* Dashboard */
+.dashboard {
+  width: 80%;
+  margin: 2rem auto;
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+.shorten-form {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.shorten-form input {
+  flex: 1;
+  padding: 0.8rem;
+  border: 2px solid #A8BCA1;
+  border-radius: 8px;
+}
+
+.shorten-form button {
+  background-color: #708238;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.url-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.url-table th {
+  background-color: #A8BCA1;
+  color: white;
+  padding: 0.8rem;
+}
+
+.url-table td {
+  padding: 0.8rem;
+  border-bottom: 1px solid #ccc;
+}
+
+.delete-btn {
+  background-color: #FADADD;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 1rem;
+  background: #A8BCA1;
+  color: white;
+  margin-top: 2rem;
+  border-radius: 0 0 12px 12px;
+}

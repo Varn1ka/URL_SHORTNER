@@ -1,12 +1,9 @@
-const express = require("express");
-const router = express.Router();
-
+const router = require("express").Router();
 const { postShortenUrl, getMyUrls, deleteUrl } = require("../controllers/urlController");
-const { auth } = require("../middleware/authMiddleware"); 
+const { auth } = require("../middleware/authMiddleware");
 
-
-router.post("/shorten", auth, postShortenUrl);
-router.get("/myurls", auth, getMyUrls);
-router.delete("/:id", auth, deleteUrl);
+router.get("/dashboard", auth, getMyUrls);
+router.post("/dashboard/shorten", auth, postShortenUrl);
+router.post("/:id/delete", auth, deleteUrl);
 
 module.exports = router;

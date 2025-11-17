@@ -1,50 +1,17 @@
 const jwt = require("jsonwebtoken");
-const JWT_SECRET = "mySuperSecretKey123";
+const JWT_SECRET = process.env.JWT_SECRET;
 
 function auth(req, res, next) {
-    console.log("Running auth middleware");
-
-    // Accept token from header or cookie
-    let token = req.cookies.token || req.headers.authorization;
-
-    if (!token) {
-        return res.status(401).json({
-            success: false,
-            message: "Authorization required"
-        });
-    }
-
-    // If token comes as "Bearer xyz..."
-    if (token.startsWith("Bearer ")) {
-        token = token.split(" ")[1];
-    }
+    const token = req.cookies.token || (req.headers.authorization && req.headers.authorization.split(" ")[1]);
+    if (!token) return res.redirect("/login");
 
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
-        req.user = decoded;   // { id, email }
+        req.user = decoded; // { sub, email }
         next();
     } catch (err) {
-        return res.status(401).json({
-            success: false,
-            message: "Invalid or expired token"
-        });
+        return res.redirect("/login");
     }
 }
 
-function isLogin(req, res, next) {
-    next();
-}
-
-function checkAdmin(req, res, next) {
-    let { name } = req.query;
-    if (name === "Varnika") {
-        req.isAdmin = true;
-        return next();
-    }
-    res.json({
-        success: false,
-        message: "You are not an admin"
-    });
-}
-
-module.exports = { auth, isLogin, checkAdmin };
+module.exports = { auth };

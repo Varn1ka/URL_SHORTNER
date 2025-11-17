@@ -1,63 +1,55 @@
 const Url = require("../models/url");
 const { nanoid } = require("nanoid");
+const { redis, publisher, pushToQueue } = require("../redis");
+const { broadcast } = require("../ws");
 
-// ----------------------
 // CREATE SHORT URL
-// ----------------------
 module.exports.postShortenUrl = async (req, res) => {
   try {
     const originalUrl = req.body.originalUrl;
     const shortId = nanoid(7);
 
-    const url = new Url({
-      originalUrl,
-      shortId,
-      owner: req.user.id,
-    });
+    const url = await Url.create({ originalUrl, shortId, owner: req.user.sub });
 
-    await url.save();
+    await redis.set(shortId, originalUrl);
+    await publisher.publish("url-events", `URL_CREATED:${shortId}`);
+    await pushToQueue({ type: "log_url", data: url });
+    broadcast("url-created", url);
 
-    // Redirect back to dashboard instead of showing JSON
-    return res.redirect("/dashboard");
-
+    res.redirect("/dashboard");
   } catch (err) {
     console.error(err);
-    return res.redirect("/dashboard");
+    res.redirect("/dashboard");
   }
 };
 
-// ----------------------
-// FETCH USER'S URL LIST
-// ----------------------
+// GET USER URLS
 module.exports.getMyUrls = async (req, res) => {
   try {
-    const urls = await Url.find({ owner: req.user.id });
-
-    // Render dashboard with updated URLs
-    return res.render("dashboard", { urls });
+    const urls = await Url.find({ owner: req.user.sub });
+    res.render("dashboard", { user: req.user, urls, baseUrl: `http://localhost:${process.env.PORT || 3000}` });
   } catch (err) {
     console.error(err);
-    return res.render("dashboard", { urls: [] });
+    res.render("dashboard", { user: req.user, urls: [], baseUrl: "" });
   }
 };
 
-// ----------------------
 // DELETE URL
-// ----------------------
 module.exports.deleteUrl = async (req, res) => {
   try {
-    const id = req.params.id;
+    const { id } = req.params;
+    const deleted = await Url.findOneAndDelete({ _id: id, owner: req.user.sub });
 
-    await Url.findOneAndDelete({
-      _id: id,
-      owner: req.user.id,
-    });
+    if (deleted) {
+      await redis.del(deleted.shortId);
+      await publisher.publish("url-events", `URL_DELETED:${deleted.shortId}`);
+      await pushToQueue({ type: "delete_log", data: deleted });
+      broadcast("url-deleted", deleted);
+    }
 
-    // Redirect back to dashboard
-    return res.redirect("/dashboard");
-
+    res.redirect("/dashboard");
   } catch (err) {
     console.error(err);
-    return res.redirect("/dashboard");
+    res.redirect("/dashboard");
   }
 };

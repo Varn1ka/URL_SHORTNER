@@ -14,8 +14,7 @@
   <main>
     <section class="dashboard">
       <h2>Welcome, <%= user.email %></h2>
-
-      <form action="/dashboard/shorten" method="POST" class="shorten-form">
+      <form action="/api/url/shorten" method="POST">
         <input type="text" name="originalUrl" placeholder="Enter your URL here..." required>
         <button type="submit">Shorten URL</button>
       </form>
@@ -52,5 +51,18 @@
   <footer>
     <p>&copy; <%= new Date().getFullYear() %> URL Shortener</p>
   </footer>
+  <script>
+  const ws = new WebSocket("ws://localhost:3000");
+
+  ws.onmessage = (event) => {
+    const msg = JSON.parse(event.data);
+
+    if (msg.event === "url-created" || msg.event === "url-deleted") {
+        alert("Real-time update: " + msg.event);
+        location.reload(); // Refresh dashboard automatically
+    }
+  };
+</script>
+
 </body>
 </html>

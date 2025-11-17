@@ -1,9 +1,12 @@
-const router = require("express").Router();
-const { postShortenUrl, getMyUrls, deleteUrl } = require("../controllers/urlController");
-const { auth } = require("../middleware/authMiddleware");
+const express = require("express");
+const router = express.Router();
+const authMiddleware = require("../middleware/authMiddleware");
+const { postShortenUrl, getMyUrls, deleteUrl, redirectShortUrl } = require("../controllers/urlController");
 
-router.get("/dashboard", auth, getMyUrls);
-router.post("/dashboard/shorten", auth, postShortenUrl);
-router.post("/:id/delete", auth, deleteUrl);
+router.post("/shorten", authMiddleware, postShortenUrl);
+router.delete("/:id", authMiddleware, deleteUrl);
+router.get("/dashboard", authMiddleware, getMyUrls);
+
+router.get("/:shortId", redirectShortUrl);
 
 module.exports = router;

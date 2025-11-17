@@ -2,30 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign Up - URL Shortener</title>
-  <link rel="stylesheet" href="/css/style.css">
+  <title>Register | URL Shortener</title>
+  <link rel="stylesheet" href="/css/styles.css">
 </head>
-
-<body class="signup-page" style="background-color:#E6F2E6;">
-  <div class="form-container" style="background-color:#A3B18A; padding:40px; border-radius:10px; max-width:400px; margin:80px auto; text-align:center; color:#1B4332; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
-    
-    <h1>Create Account</h1>
-    <p>Sign up to start shortening links securely.</p>
-
-    <!-- NORMAL FORM SUBMIT (NO JS) -->
-    <form action="/api/auth/register" method="POST" style="display:flex; flex-direction:column; gap:15px; margin-top:20px;">
-      <input type="email" name="email" placeholder="Email" required style="padding:10px; border-radius:5px; border:none;">
-      <input type="password" name="password" placeholder="Password" required style="padding:10px; border-radius:5px; border:none;">
-
-      <button type="submit" style="padding:10px; border:none; border-radius:5px; background-color:#4B7447; color:white; cursor:pointer;">
-        Sign Up
-      </button>
-    </form>
-
-    <p style="margin-top:15px;">Already have an account? 
-      <a href="/signin" style="color:#1B4332; font-weight:bold;">Sign In</a>
-    </p>
-  </div>
+<body>
+  <h1>Register</h1>
+  <form action="/register" method="POST">
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <button type="submit">Register</button>
+  </form>
+  <p>Already have an account? <a href="/login">Login</a></p>
 </body>
 </html>

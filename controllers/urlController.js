@@ -3,16 +3,47 @@ const { nanoid } = require("nanoid");
 const { redis, publisher, pushToQueue } = require("../redisClient");
 
 // CREATE SHORT URL
+// CREATE SHORT URL
 module.exports.postShortenUrl = async (req, res) => {
   try {
-    const originalUrl = req.body.originalUrl;
-    const shortId = nanoid(7);
-    const url = await Url.create({ originalUrl, shortId, owner: req.user.sub });
+    const { originalUrl, customAlias } = req.body;
 
+    let shortId;
+
+    // If user entered custom alias
+    if (customAlias && customAlias.trim() !== "") {
+      // Check if already exists
+      const exists = await Url.findOne({ shortId: customAlias });
+
+      if (exists) {
+        return res.json({
+          success: false,
+          message: "This custom short URL is already taken!",
+        });
+      }
+
+      shortId = customAlias; // Use custom alias
+    } else {
+      // Otherwise generate random nanoid
+      shortId = nanoid(7);
+    }
+
+    const url = await Url.create({
+      originalUrl,
+      shortId,
+      owner: req.user.sub,
+    });
+
+    // Cache in Redis
     await redis.set(shortId, originalUrl);
+
     await publisher.publish("url-events", `URL_CREATED:${shortId}`);
     await pushToQueue({ type: "log_url", data: url });
-    req.app.locals.broadcast("url-created", { shortUrl: `${req.protocol}://${req.get("host")}/${shortId}`, ...url._doc });
+
+    req.app.locals.broadcast("url-created", {
+      shortUrl: `${req.protocol}://${req.get("host")}/${shortId}`,
+      ...url._doc,
+    });
 
     res.redirect("/dashboard");
   } catch (err) {

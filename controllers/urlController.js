@@ -16,11 +16,14 @@ module.exports.postShortenUrl = async (req, res) => {
       const exists = await Url.findOne({ shortId: customAlias });
 
       if (exists) {
-        return res.json({
-          success: false,
-          message: "This custom short URL is already taken!",
-        });
-      }
+  return res.render("dashboard", {
+    user: req.user,
+    urls: await Url.find({ owner: req.user.sub }),
+    baseUrl: `http://localhost:3000`,
+    error: "This custom short URL is already taken!"
+  });
+}
+
 
       shortId = customAlias; // Use custom alias
     } else {

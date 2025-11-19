@@ -1,51 +1,127 @@
+/* Global */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  text-align: center;
-  background-color: #f2f2f2;
-}
-
-header {
-  background-color: #4CAF50;
+  background-color: #2b1f24; /* dark cherry background */
   color: white;
-  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
+/* Centered card container for login/register/dashboard sections */
+form,
 .dashboard {
-  margin: 20px auto;
-  width: 80%;
-  max-width: 600px;
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
+  background-color: #0f2f2f; /* deep teal */
+  padding: 30px;
+  width: 90%;
+  max-width: 500px;
+  margin: 40px auto;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  text-align: center;
 }
 
+/* Main titles */
+h1 {
+  margin-top: 40px;
+  color: #7ff0d8; /* light sea green */
+  font-size: 36px;
+  font-weight: bold;
+}
+
+/* Small subtitles like login/register link text */
+p, a {
+  color: #b6fff0; 
+  font-size: 14px;
+}
+
+a:hover {
+  color: #ffb3d9; /* baby pink hover */
+}
+
+/* Input fields */
+input {
+  width: 90%;
+  padding: 8px;   /* smaller input height */
+  margin: 10px 0;
+  border-radius: 8px;
+  border: none;
+  background-color: #0a0a0a;
+  color: white;
+  font-size: 14px;
+}
+
+/* Buttons */
+button {
+  width: 90%;
+  padding: 12px;
+  margin-top: 10px;
+  background-color: #ff8fb8; /* baby pink */
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+button:hover {
+  background-color: #ff6fa2;
+}
+
+/* Delete button (keep same class) */
+.delete-btn {
+  background-color: #d93744;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.delete-btn:hover {
+  background-color: #b52c36;
+}
+
+/* Dashboard title */
+header {
+  background-color: transparent;
+  padding: 20px;
+  color: #7ff0d8;
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* url-table stays same class name but gets cute theme */
 .url-table {
   width: 100%;
-  border-collapse: collapse;
   margin-top: 20px;
-}
-
-.url-table th, .url-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
+  border-collapse: collapse;
+  color: white;
 }
 
 .url-table th {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.delete-btn {
-  background-color: red;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
-}
-
-input, button {
+  background-color: #145f5f; /* sea green */
   padding: 10px;
-  margin: 5px;
+  color: white;
+}
+
+.url-table td {
+  padding: 8px;
+  background-color: #102828; /* teal-dark */
+  border: 1px solid #1f3d3d;
+}
+
+.no-urls {
+  color: #ffb3d9;
+  margin-top: 15px;
+}
+
+/* Footer */
+footer {
+  margin: 20px 0;
+  color: #b6fff0;
+  font-size: 14px;
 }

@@ -8,8 +8,11 @@ module.exports.registerUser = async (req, res) => {
 
   try {
     const existing = await User.findOne({ email });
-    if (existing)
-      return res.json({ success: false, message: "User already exists" });
+    if (existing) {
+  return res.render("register", {
+    error: "User already exists!"
+  });
+}
 
     // ---- HASH PASSWORD ----
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -32,12 +35,19 @@ module.exports.loginUser = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user)
-      return res.json({ success: false, message: "Invalid credentials" });
+      return res.render("login", {
+  title: "Login",
+  error: "Invalid email or password",
+});
+
 
     // ---- COMPARE HASHED PASSWORD ----
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
-      return res.json({ success: false, message: "Invalid credentials" });
+      return res.render("login", {
+  title: "Login",
+  error: "Invalid email or password",
+});
 
     const token = jwt.sign(
       { sub: user._id, email: user.email },

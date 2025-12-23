@@ -2,17 +2,12 @@ const Url = require("../models/url");
 const { nanoid } = require("nanoid");
 const { redis, publisher, pushToQueue } = require("../redisClient");
 
-// CREATE SHORT URL
-// CREATE SHORT URL
 module.exports.postShortenUrl = async (req, res) => {
   try {
     const { originalUrl, customAlias } = req.body;
 
     let shortId;
-
-    // If user entered custom alias
     if (customAlias && customAlias.trim() !== "") {
-      // Check if already exists
       const exists = await Url.findOne({ shortId: customAlias });
 
       if (exists) {
@@ -22,9 +17,9 @@ module.exports.postShortenUrl = async (req, res) => {
         });
       }
 
-      shortId = customAlias; // Use custom alias
+      shortId = customAlias; 
     } else {
-      // Otherwise generate random nanoid
+    
       shortId = nanoid(7);
     }
 
@@ -34,7 +29,6 @@ module.exports.postShortenUrl = async (req, res) => {
       owner: req.user.sub,
     });
 
-    // Cache in Redis
     await redis.set(shortId, originalUrl);
 
     await publisher.publish("url-events", `URL_CREATED:${shortId}`);
@@ -52,7 +46,6 @@ module.exports.postShortenUrl = async (req, res) => {
   }
 };
 
-// GET USER URLS
 module.exports.getMyUrls = async (req, res) => {
   try {
     const urls = await Url.find({ owner: req.user.sub });
@@ -64,7 +57,6 @@ module.exports.getMyUrls = async (req, res) => {
   }
 };
 
-// DELETE URL
 module.exports.deleteUrl = async (req, res) => {
   try {
     const { id } = req.params;
@@ -84,26 +76,19 @@ module.exports.deleteUrl = async (req, res) => {
   }
 };
 
-// REDIRECT SHORT URL
 module.exports.redirectShortUrl = async (req, res) => {
   try {
     const { shortId } = req.params;
-
-    // Try to get original URL from Redis cache
     let originalUrl = await redis.get(shortId);
 
     if (!originalUrl) {
-      // If not in Redis, fetch from DB
       const url = await Url.findOne({ shortId });
       if (!url) return res.status(404).send("URL not found");
 
       originalUrl = url.originalUrl;
-
-      // Optionally, cache in Redis
       await redis.set(shortId, originalUrl);
     }
 
-    // Redirect to original URL
     res.redirect(originalUrl);
   } catch (err) {
     console.error(err);

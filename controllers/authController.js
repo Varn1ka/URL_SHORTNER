@@ -1,6 +1,6 @@
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");                  // <-- ADDED
+const bcrypt = require("bcrypt");                 
 const JWT_SECRET = "mySuperSecretKey123";
 
 module.exports.registerUser = async (req, res) => {
@@ -11,12 +11,11 @@ module.exports.registerUser = async (req, res) => {
     if (existing)
       return res.json({ success: false, message: "User already exists" });
 
-    // ---- HASH PASSWORD ----
     const hashedPassword = await bcrypt.hash(password, 10);
 
     await User.create({
       email,
-      password: hashedPassword,          // <-- STORE HASH
+      password: hashedPassword,         
     });
 
     res.redirect("/login");
@@ -34,7 +33,6 @@ module.exports.loginUser = async (req, res) => {
     if (!user)
       return res.json({ success: false, message: "Invalid credentials" });
 
-    // ---- COMPARE HASHED PASSWORD ----
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return res.json({ success: false, message: "Invalid credentials" });

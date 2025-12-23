@@ -14,8 +14,6 @@
   <main>
     <section class="dashboard">
       <h2>Welcome, <%= user.email %></h2>
-
-      <!-- Shorten URL Form -->
       <form action="/shorten" method="POST">
         <input type="text" name="originalUrl" placeholder="Enter your URL here..." required>
          <input type="text" name="customAlias" placeholder="Custom short URL (optional)">
@@ -37,7 +35,6 @@
                 <td><a href="<%= url.originalUrl %>" target="_blank"><%= url.originalUrl %></a></td>
                 <td><a href="<%= baseUrl %>/<%= url.shortId %>" target="_blank"><%= baseUrl %>/<%= url.shortId %></a></td>
                 <td>
-                  <!-- Fixed Delete URL Form -->
                   <form action="/<%= url._id %>?_method=DELETE" method="POST">
                     <button type="submit" class="delete-btn">Delete</button>
                   </form>
@@ -56,7 +53,6 @@
     <p>&copy; <%= new Date().getFullYear() %> URL Shortener</p>
   </footer>
 
-  <!-- WebSocket for real-time updates -->
   <script>
     const ws = new WebSocket("ws://localhost:3000");
 
@@ -67,7 +63,7 @@
     ws.onmessage = function(event) {
       const data = JSON.parse(event.data);
       alert("Real-time update: " + data.event);
-      location.reload(); // Refresh dashboard automatically
+      location.reload(); 
     };
 
     ws.onclose = function() {

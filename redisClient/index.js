@@ -1,7 +1,19 @@
 const Redis = require("ioredis");
-const redis = new Redis();
-const subscriber = new Redis();
-const publisher = new Redis();
+
+const redis = new Redis({
+  host: process.env.REDIS_HOST || "redis",  // <- use container service name
+  port: 6379,
+});
+
+const subscriber = new Redis({
+  host: process.env.REDIS_HOST || "redis",
+  port: 6379,
+});
+
+const publisher = new Redis({
+  host: process.env.REDIS_HOST || "redis",
+  port: 6379,
+});
 
 const pushToQueue = async (data) => {
   await redis.lpush("urlQueue", JSON.stringify(data));
